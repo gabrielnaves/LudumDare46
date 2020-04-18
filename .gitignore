@@ -1,0 +1,67 @@
+# =============== #
+# Unity generated #
+# =============== #
+Temp/
+Obj/
+UnityGenerated/
+/Library/
+
+# ===================================== #
+# Visual Studio / MonoDevelop generated #
+# ===================================== #
+ExportedObj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+
+# ============ #
+# OS generated #
+# ============ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+Thumbs.db.meta
+
+# =============== #
+# Build generated #
+# =============== #
+*.apk
+Builds/
+
+# =============== #
+# Doxygen related #
+# =============== #
+Docs/
+Assets/Editor/Doxygen/
+Assets/Editor/Doxygen.meta
+
+\.vscode/
+.vs/
+
+Keystores
+
+.gradle/
+
+Logs/
+
+# ==== #
+# FMOD #
+# ==== #
+Assets/StreamingAssets/
+Assets/StreamingAssets.meta
+fmod_editor.log
+*FMODStudioCache.asset
+*FMODStudioCache.asset.meta
+Assets/Plugins/FMOD/Cache/
+Assets/Plugins/FMOD/Cache.meta
