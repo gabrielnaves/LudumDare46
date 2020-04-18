@@ -6,6 +6,8 @@ public class GameInput : MonoBehaviour {
 
     [ViewOnly] public Vector2 movement;
 
+    public bool isMoving => movement != Vector2.zero;
+
     void Awake() {
         instance = (GameInput)Singleton.Setup(this, instance);
     }
