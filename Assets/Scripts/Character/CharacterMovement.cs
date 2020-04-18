@@ -17,6 +17,8 @@ public class CharacterMovement : MonoBehaviour {
     Rigidbody body;
     CapsuleCollider col;
 
+    Vector3 savedNormal = Vector3.up;
+
     void Awake() {
         body = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
@@ -77,7 +79,8 @@ public class CharacterMovement : MonoBehaviour {
             Transform hitTransform = hit.collider.transform;
             interpolatedNormal = hitTransform.TransformDirection(interpolatedNormal);
 
-            body.MoveRotation(Quaternion.FromToRotation(Vector3.up, interpolatedNormal));
+            savedNormal = 0.3f * savedNormal + 0.7f * interpolatedNormal;
+            body.MoveRotation(Quaternion.FromToRotation(Vector3.up, savedNormal));
         }
     }
 
