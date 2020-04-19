@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 20c09ed16d32176449e5dcca7f40aae0
+guid: 42798384fd96eb84eae37ffbdb6df7e4
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
@@ -7,18 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Fruit
-    second: {fileID: 2100000, guid: f9d58df8c385acf4a802583002836ece, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Leaf
-    second: {fileID: 2100000, guid: 9d72354f87538d042a27da2bddbb48ea, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Tree Bark
-    second: {fileID: 2100000, guid: 335a786b6a0a3c94cb588dffb5f2a867, type: 2}
+      name: Grass
+    second: {fileID: 2100000, guid: 81118f7deafa90c44949f44e3253d03b, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

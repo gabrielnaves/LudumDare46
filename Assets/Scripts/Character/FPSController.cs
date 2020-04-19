@@ -6,7 +6,7 @@ public class FPSController : MonoBehaviour {
     public LookSettings lookSettings;
 
     public Transform fpsCamera;
-    public bool interpolateNormal;
+    public LayerMask collisionmask;
 
     [ViewOnly] public bool grounded;
 
@@ -15,6 +15,7 @@ public class FPSController : MonoBehaviour {
     float speed;
     Vector2 movementDirection;
     float camXRotation;
+    Vector3 desiredMovement;
     Vector3 targetPosition;
     Vector3 groundNormal = Vector3.up;
 
@@ -25,6 +26,7 @@ public class FPSController : MonoBehaviour {
     void Update() {
         UpdateCamera();
         CalculateMovement();
+        CalculateCollisions();
         Groundcheck();
         ApplyGravityIfFalling();
         transform.position = targetPosition;
@@ -47,8 +49,22 @@ public class FPSController : MonoBehaviour {
             speed -= movementSettings.deceleration * Time.deltaTime;
         speed = Mathf.Clamp(speed, 0, movementSettings.maxSpeed);
 
-        Vector3 movement = transform.right * movementDirection.x * speed * Time.deltaTime + transform.forward * movementDirection.y * speed * Time.deltaTime;
-        targetPosition = transform.position + movement;
+        desiredMovement = transform.right * movementDirection.x * speed * Time.deltaTime + transform.forward * movementDirection.y * speed * Time.deltaTime;
+        targetPosition = transform.position + desiredMovement;
+    }
+    
+    void CalculateCollisions() {
+        Vector3 origin = transform.position + transform.up * col.radius * 2;
+        if (Physics.SphereCast(origin, col.radius, desiredMovement, out RaycastHit hit, desiredMovement.magnitude, collisionmask)) {
+            Vector3 hitdir = hit.point - origin;
+            Vector3 movementUpToCollision = Vector3.Project(desiredMovement, hitdir);
+            Vector3 hitNormal = hit.transform.TransformDirection(hit.normal);
+            movementUpToCollision -= Vector3.Project(movementUpToCollision, hitNormal);
+            Vector3 remainingMovement = desiredMovement - movementUpToCollision;
+            remainingMovement -= Vector3.Project(remainingMovement, -hitNormal);
+            desiredMovement = movementUpToCollision + remainingMovement;
+            targetPosition = transform.position + desiredMovement;
+        }
     }
 
     void Groundcheck() {
@@ -57,7 +73,8 @@ public class FPSController : MonoBehaviour {
         if (Physics.Raycast(origin, -transform.up, out RaycastHit hit, maxDistance, movementSettings.groundLayer)) {
             grounded = true;
             targetPosition = hit.point;
-            transform.rotation = Quaternion.FromToRotation(transform.up, InterpolateNormal(hit)) * transform.rotation;
+            groundNormal = movementSettings.filter * groundNormal + (1 - movementSettings.filter) * InterpolateNormal(hit);
+            transform.rotation = Quaternion.FromToRotation(transform.up, groundNormal) * transform.rotation;
         }
         else
             grounded = false;
@@ -80,7 +97,6 @@ public class FPSController : MonoBehaviour {
         // material and texture
         MeshCollider meshCollider = hit.collider as MeshCollider;
         if (meshCollider == null || meshCollider.sharedMesh == null) {
-            groundNormal = hit.normal;
             return hit.normal;
         }
 
@@ -104,8 +120,7 @@ public class FPSController : MonoBehaviour {
         // Transform local space normals to world space
         Transform hitTransform = hit.collider.transform;
         interpolatedNormal = hitTransform.TransformDirection(interpolatedNormal);
-        groundNormal = 0.8f * groundNormal + 0.2f * interpolatedNormal;
-        return groundNormal;
+        return interpolatedNormal;
     }
 
     [System.Serializable]
@@ -117,6 +132,9 @@ public class FPSController : MonoBehaviour {
         public float gravityScale = 3f;
         public float groundcheckDistance = 0.2f;
         public LayerMask groundLayer;
+
+        [Tooltip("How much the previous ground normal will affect the current one")]
+        public float filter = 0.1f;
     }
 
     [System.Serializable]
