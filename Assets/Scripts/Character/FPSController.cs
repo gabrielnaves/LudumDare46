@@ -7,9 +7,11 @@ public class FPSController : MonoBehaviour {
 
     public Transform fpsCamera;
     public LayerMask collisionmask;
+    public float elasticity;
 
     [ViewOnly] public bool grounded;
 
+    Rigidbody body;
     CapsuleCollider col;
 
     float speed;
@@ -20,6 +22,7 @@ public class FPSController : MonoBehaviour {
     Vector3 groundNormal = Vector3.up;
 
     void Awake() {
+        body = GetComponent<Rigidbody>();
         col = GetComponent<CapsuleCollider>();
     }
 
@@ -54,7 +57,7 @@ public class FPSController : MonoBehaviour {
     }
     
     void CalculateCollisions() {
-        Vector3 origin = transform.position + transform.up * col.radius * 2;
+        Vector3 origin = transform.position + transform.up * col.height / 2;
         if (Physics.SphereCast(origin, col.radius, desiredMovement, out RaycastHit hit, desiredMovement.magnitude, collisionmask)) {
             Vector3 hitdir = hit.point - origin;
             Vector3 movementUpToCollision = Vector3.Project(desiredMovement, hitdir);
@@ -62,13 +65,13 @@ public class FPSController : MonoBehaviour {
             movementUpToCollision -= Vector3.Project(movementUpToCollision, hitNormal);
             Vector3 remainingMovement = desiredMovement - movementUpToCollision;
             remainingMovement -= Vector3.Project(remainingMovement, -hitNormal);
-            desiredMovement = movementUpToCollision + remainingMovement;
+            desiredMovement = movementUpToCollision + remainingMovement * elasticity;
             targetPosition = transform.position + desiredMovement;
         }
     }
 
     void Groundcheck() {
-        Vector3 origin = targetPosition + transform.up * col.radius * 2;
+        Vector3 origin = targetPosition + transform.up * col.height / 2;
         float maxDistance = col.radius * 2 + movementSettings.groundcheckDistance;
         if (Physics.Raycast(origin, -transform.up, out RaycastHit hit, maxDistance, movementSettings.groundLayer)) {
             grounded = true;

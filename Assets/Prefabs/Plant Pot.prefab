@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!4 &789736177407133801
 Transform:
@@ -43,9 +43,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 1
-  m_Height: 3
+  m_Height: 5
   m_Direction: 1
-  m_Center: {x: 0, y: 1.55, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &789736177985021809
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53,6 +53,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 789736177407133801}
     m_Modifications:
+    - target: {fileID: -8684251187902555887, guid: 5b232390b6204324584a67940dc7671d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: 5b232390b6204324584a67940dc7671d,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -112,6 +117,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Plant Pot
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: 5b232390b6204324584a67940dc7671d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 3358011111348513211, guid: 5b232390b6204324584a67940dc7671d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 4224801822505238522, guid: 5b232390b6204324584a67940dc7671d,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5b232390b6204324584a67940dc7671d, type: 3}
