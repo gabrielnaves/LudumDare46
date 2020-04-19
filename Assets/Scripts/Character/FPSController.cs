@@ -85,6 +85,11 @@ public class FPSController : MonoBehaviour {
 
     void ApplyGravityIfFalling() {
         if (grounded) return;
+        // dem hacks
+        if (!Physics.Raycast(targetPosition, -transform.up, Mathf.Infinity, movementSettings.groundLayer)) {
+            if (targetPosition.sqrMagnitude > 200 * 200)
+                transform.up = targetPosition.normalized;
+        }
         Vector3 gravityDisplacement = -transform.up * movementSettings.gravityScale * Mathf.Abs(Physics.gravity.y) * Time.deltaTime;
         if (Physics.Raycast(targetPosition, gravityDisplacement, out RaycastHit hit, gravityDisplacement.magnitude, movementSettings.groundLayer))
             targetPosition = hit.point;
