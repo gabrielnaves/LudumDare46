@@ -65,3 +65,6 @@ fmod_editor.log
 *FMODStudioCache.asset.meta
 Assets/Plugins/FMOD/Cache/
 Assets/Plugins/FMOD/Cache.meta
+
+*.blend1
+*.blend1.meta
