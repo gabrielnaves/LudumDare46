@@ -8,7 +8,7 @@ ModelImporter:
     second: Scene
   externalObjects: {}
   materials:
-    materialImportMode: 1
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -63,13 +63,13 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 122
-    normalImportMode: 1
+    normalSmoothAngle: 120
+    normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
-    blendShapeNormalImportMode: 1
-    normalSmoothingSource: 2
+    blendShapeNormalImportMode: 0
+    normalSmoothingSource: 0
   referencedClips: []
   importAnimation: 1
   humanDescription:

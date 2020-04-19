@@ -6,6 +6,7 @@ public class FPSController : MonoBehaviour {
     public LookSettings lookSettings;
 
     public Transform fpsCamera;
+    public bool interpolateNormal;
 
     [ViewOnly] public bool grounded;
 
@@ -15,6 +16,7 @@ public class FPSController : MonoBehaviour {
     Vector2 movementDirection;
     float camXRotation;
     Vector3 targetPosition;
+    Vector3 groundNormal = Vector3.up;
 
     void Awake() {
         col = GetComponent<CapsuleCollider>();
@@ -52,11 +54,10 @@ public class FPSController : MonoBehaviour {
     void Groundcheck() {
         Vector3 origin = targetPosition + transform.up * col.radius * 2;
         float maxDistance = col.radius * 2 + movementSettings.groundcheckDistance;
-        if (Physics.SphereCast(origin, col.radius, -transform.up, out RaycastHit hit, maxDistance, movementSettings.groundLayer)) {
+        if (Physics.Raycast(origin, -transform.up, out RaycastHit hit, maxDistance, movementSettings.groundLayer)) {
             grounded = true;
             targetPosition = hit.point;
-            transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
-            Debug.Log(transform.up);
+            transform.rotation = Quaternion.FromToRotation(transform.up, InterpolateNormal(hit)) * transform.rotation;
         }
         else
             grounded = false;
@@ -65,45 +66,47 @@ public class FPSController : MonoBehaviour {
     void ApplyGravityIfFalling() {
         if (grounded) return;
         Vector3 gravityDisplacement = -transform.up * movementSettings.gravityScale * Mathf.Abs(Physics.gravity.y) * Time.deltaTime;
-        if (Physics.SphereCast(targetPosition, col.radius, gravityDisplacement, out RaycastHit hit, gravityDisplacement.magnitude, movementSettings.groundLayer))
+        if (Physics.Raycast(targetPosition, gravityDisplacement, out RaycastHit hit, gravityDisplacement.magnitude, movementSettings.groundLayer))
             targetPosition = hit.point;
         else
             targetPosition += gravityDisplacement;
     }
 
-    //Vector3 InterpolateNormal(RaycastHit hit) {
-    //    // Code for interpolated normal taken from here:
-    //    // https://docs.unity3d.com/ScriptReference/RaycastHit-barycentricCoordinate.html
+    Vector3 InterpolateNormal(RaycastHit hit) {
+        // Code for interpolated normal taken from here:
+        // https://docs.unity3d.com/ScriptReference/RaycastHit-barycentricCoordinate.html
 
-    //    // Just in case, also make sure the collider also has a renderer
-    //    // material and texture
-    //    MeshCollider meshCollider = hit.collider as MeshCollider;
-    //    if (meshCollider == null || meshCollider.sharedMesh == null) {
-    //        return Vector3.up;
-    //    }
+        // Just in case, also make sure the collider also has a renderer
+        // material and texture
+        MeshCollider meshCollider = hit.collider as MeshCollider;
+        if (meshCollider == null || meshCollider.sharedMesh == null) {
+            groundNormal = hit.normal;
+            return hit.normal;
+        }
 
-    //    Mesh mesh = meshCollider.sharedMesh;
-    //    Vector3[] normals = mesh.normals;
-    //    int[] triangles = mesh.triangles;
+        Mesh mesh = meshCollider.sharedMesh;
+        Vector3[] normals = mesh.normals;
+        int[] triangles = mesh.triangles;
 
-    //    // Extract local space normals of the triangle we hit
-    //    Vector3 n0 = normals[triangles[hit.triangleIndex * 3 + 0]];
-    //    Vector3 n1 = normals[triangles[hit.triangleIndex * 3 + 1]];
-    //    Vector3 n2 = normals[triangles[hit.triangleIndex * 3 + 2]];
+        // Extract local space normals of the triangle we hit
+        Vector3 n0 = normals[triangles[hit.triangleIndex * 3 + 0]];
+        Vector3 n1 = normals[triangles[hit.triangleIndex * 3 + 1]];
+        Vector3 n2 = normals[triangles[hit.triangleIndex * 3 + 2]];
 
-    //    // interpolate using the barycentric coordinate of the hitpoint
-    //    Vector3 baryCenter = hit.barycentricCoordinate;
+        // interpolate using the barycentric coordinate of the hitpoint
+        Vector3 baryCenter = hit.barycentricCoordinate;
 
-    //    // Use barycentric coordinate to interpolate normal
-    //    Vector3 interpolatedNormal = n0 * baryCenter.x + n1 * baryCenter.y + n2 * baryCenter.z;
-    //    // normalize the interpolated normal
-    //    interpolatedNormal = interpolatedNormal.normalized;
+        // Use barycentric coordinate to interpolate normal
+        Vector3 interpolatedNormal = n0 * baryCenter.x + n1 * baryCenter.y + n2 * baryCenter.z;
+        // normalize the interpolated normal
+        interpolatedNormal = interpolatedNormal.normalized;
 
-    //    // Transform local space normals to world space
-    //    Transform hitTransform = hit.collider.transform;
-    //    interpolatedNormal = hitTransform.TransformDirection(interpolatedNormal);
-    //    return interpolatedNormal;
-    //}
+        // Transform local space normals to world space
+        Transform hitTransform = hit.collider.transform;
+        interpolatedNormal = hitTransform.TransformDirection(interpolatedNormal);
+        groundNormal = 0.8f * groundNormal + 0.2f * interpolatedNormal;
+        return groundNormal;
+    }
 
     [System.Serializable]
     public class MovementSettings {
